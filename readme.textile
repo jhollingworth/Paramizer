@@ -2,7 +2,7 @@ h1. Overview
 
 I had a common use case where I needed to serialize/deserialize between an object and a query string. So I wrote a small lib to do this:
 
-To use it, decorate any properties you want to serialize/deserialize with UrlParamAttribute. By default the key is the property name however this can be overriden. You can also specify if the parameter is optional. 
+To use it, decorate any properties you want to serialize/deserialize with UrlParamAttribute. By default the key is the property name however this can be overriden. You can also specify if the parameter is required or not during de-serialization using the Required property. 
 
 <pre>
 public class SomeClass
@@ -10,7 +10,7 @@ public class SomeClass
     [UrlParam]
     public string SomeKey { get; set; }
 
-    [UrlParam(Key = "a")]
+    [UrlParam(Key = "a", Required = true)]
     public int SomeOtherKey { get; set; }
 }
 </pre>
