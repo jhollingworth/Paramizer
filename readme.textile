@@ -1,0 +1,62 @@
+h1. Overview
+
+I had a common use case where I needed to serialize/deserialize between an object and a query string. So I wrote a small lib to do this:
+
+To use it, decorate any properties you want to serialize/deserialize with UrlParamAttribute. By default the key is the property name however this can be overriden. You can also specify if the parameter is optional. 
+
+<pre>
+public class SomeClass
+{
+    [UrlParam]
+    public string SomeKey { get; set; }
+
+    [UrlParam("a", true)]
+    public int SomeOtherKey { get; set; }
+
+}
+</pre>
+
+To use, you instantiate an instance of UrlSerializer and use the following methods:
+
+<pre>
+var serializer = new UrlSerializer();
+
+var deserializedObject = serializer.DeSerialize<SomeClass>("http://foo.com/?SomeKey=foo&a=201");
+
+var url = serializer.Serialize("http://foo.com", deserializedObject); //will return "http://foo.com/?SomeKey=foo&a=201"
+</pre>
+
+For more complex types you can specify a converter which must implement IUrlParamConveter 
+
+<pre>
+public class SomeClassWithAComplexType
+{
+    [UrlParam("b", true, Converter = typeof(ComplexEnumConverter))]
+    public ComplexEnum SomeComplexType { get; set; }
+}
+
+public class ComplexEnumConverter : IUrlParamConverter
+{
+    public object Deserialize(Type destinationType, string value)
+    {
+        switch (value.ToLower())
+        {
+            case "f": return ComplexEnum.Foo;
+            case "b": return ComplexEnum.Bar;
+            default: throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public string Serialize(object value)
+    {
+        return value.ToString().ToLower()[0].ToString();
+    }
+}
+
+public enum ComplexEnum
+{
+    Foo, Bar
+}
+</pre>
+
+If you want to manage the creation of Url param converter's (e.g. if you want to use IoC) you can create your own implementation of IUrlParamConverterFactory and pass it into the UrlSerializer constructor.
