@@ -77,7 +77,7 @@ namespace Paramizer.Specs
         };
 
         Because we_des = () =>
-            Result = Serializer.DeSerialize<Sample>(Subject);
+            Result = Serializer.Deserialize<Sample>(Subject);
 
         It should_serialize_the_default_param = () =>
             Result.Param.ShouldEqual("foo");

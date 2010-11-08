@@ -6,7 +6,13 @@ using System.Web;
 
 namespace Paramizer
 {
-    public class UrlSerializer
+    public interface IUrlSerializer
+    {
+        Uri Serialize(string baseUrl, object entity);
+        TEntity Deserialize<TEntity>(Uri url);
+    }
+
+    public class UrlSerializer : IUrlSerializer
     {
         private readonly IUrlParamConverterFactory _converterFactory;
         private IUrlParamConverter _defaultParamConverter;
@@ -66,7 +72,7 @@ namespace Paramizer
             return converter;
         }
 
-        public TEntity DeSerialize<TEntity>(Uri url)
+        public TEntity Deserialize<TEntity>(Uri url)
         {
             var @params = HttpUtility.ParseQueryString(url.Query.ToLower());
             var entity = (TEntity)Activator.CreateInstance(typeof (TEntity));
