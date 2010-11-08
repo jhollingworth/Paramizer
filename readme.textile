@@ -10,7 +10,7 @@ public class SomeClass
     [UrlParam]
     public string SomeKey { get; set; }
 
-    [UrlParam("a", true)]
+    [UrlParam(Key = "a")]
     public int SomeOtherKey { get; set; }
 }
 </pre>
